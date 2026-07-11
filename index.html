@@ -71,6 +71,8 @@ h1,h2,h3,h4,.fd{font-family:'Space Grotesk',sans-serif}
 <button class="tbn on" onclick="stab('opp',this)">Opportunities</button>
 <button class="tbn" onclick="stab('ch',this)">Analytics</button>
 <button class="tbn" onclick="stab('ar',this)">Areas</button>
+<button class="tbn" onclick="stab('guide',this)"><i class="fas fa-book mr-1"></i>Guide</button>
+<button class="tbn" onclick="stab('research',this)"><i class="fas fa-robot mr-1"></i>AI Research</button>
 </div>
 <section id="t-opp" class="gc overflow-hidden">
 <div class="p-4" style="border-bottom:1px solid var(--bdr)"><h2 class="fd text-sm font-semibold">Ranked Opportunities</h2></div>
@@ -186,10 +188,6 @@ function copyAllData(){var combined=[...allP.filter(function(p){return p.source!
 var origLoad=loadData;
 loadData=function(){Promise.all([fetch('data/properties.json').catch(function(){return{json:function(){return[]}}}),fetch('data/scan_status.json').catch(function(){return{json:function(){return{}}}})]).then(function(res){return Promise.all([res[0].json(),res[1].json()]);}).then(function(data){var serverProps=data[0];scanInfo=data[1];var merged=serverProps.concat(userProps);allP=merged;var sb=document.getElementById('statusBadge');if(serverProps.length>0){sb.innerHTML='<i class="fas fa-circle text-xs mr-1" style="color:var(--ok)"></i>Live · '+merged.length+' props';}else{sb.innerHTML='<i class="fas fa-circle text-xs mr-1" style="color:var(--wrn)"></i>Local · '+merged.length+' props';}applyFilters();}).catch(function(e){origLoad();});};
 </script>
-<div class="np flex gap-2" style="margin-top:-8px;margin-bottom:16px;">
-<button class="tbn" onclick="stab('guide',this)"><i class="fas fa-book mr-1"></i>Guide</button>
-<button class="tbn" onclick="stab('research',this)"><i class="fas fa-robot mr-1"></i>AI Research</button>
-</div>
 <section id="t-guide" style="display:none" class="gc p-6 space-y-5">
 <div><h2 class="fd text-lg font-bold mb-3" style="color:var(--ac)">How to Use This Dashboard</h2>
 <div class="space-y-4 text-sm" style="color:var(--t2);line-height:1.8">
