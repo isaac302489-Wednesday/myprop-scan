@@ -134,3 +134,55 @@ loadData();
 </script>
 </body>
 </html>
+<div id="addBtn" style="position:fixed;bottom:24px;right:24px;z-index:50;">
+  <button onclick="openAddForm()" class="bp" style="border-radius:50px;padding:14px 24px;font-size:14px;box-shadow:0 4px 30px rgba(201,168,76,0.4)"><i class="fas fa-plus mr-2"></i>Add Property</button>
+</div>
+<div id="addMod" class="mo" onclick="if(event.target===this)closeAddForm()">
+  <div class="mc p-6" style="max-width:550px">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="fd text-lg font-bold">Add Property</h2>
+      <button onclick="closeAddForm()" style="color:var(--t3);cursor:pointer;background:none;border:none;font-size:20px"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="space-y-3">
+      <div><label class="text-xs block mb-1" style="color:var(--t3)">Property Name *</label><input id="fName" type="text" placeholder="e.g. Verve Suites" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Type</label><select id="fType" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"><option>Condo</option><option>Apartment</option><option>Serviced Residence</option><option>Terrace</option><option>Semi-D</option><option>Flat</option><option>Studio</option></select></div>
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Bedrooms</label><input id="fBeds" type="number" value="3" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Size (sqft) *</label><input id="fSize" type="number" value="1000" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"></div>
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Year Built</label><input id="fYear" type="number" value="2020" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Price (RM) *</label><input id="fPrice" type="number" value="500000" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"></div>
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Monthly Rent (RM) *</label><input id="fRent" type="number" value="2200" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">Area *</label><select id="fArea" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"><option>Mont Kiara</option><option>KLCC</option><option>Bangsar</option><option>KL Sentral</option><option>Bukit Jalil</option><option>Subang Jaya</option><option>Petaling Jaya</option><option>Puchong</option><option>Shah Alam</option><option>Kajang</option><option>Gurney</option><option>Bayan Lepas</option><option>George Town</option><option>Johor Bahru</option><option>Iskandar Puteri</option></select></div>
+        <div><label class="text-xs block mb-1" style="color:var(--t3)">State</label><select id="fState" class="w-full fd text-sm px-3 py-2 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);color:var(--t1)"><option>Kuala Lumpur</option><option>Selangor</option><option>Penang</option><option>Johor</option></select></div>
+      </div>
+      <div id="addPreview" class="p-3 rounded-lg" style="background:var(--bg);border:1px solid var(--bdr);display:none">
+        <div class="text-xs mb-1" style="color:var(--t3)">Preview: Yield</div>
+        <div id="addYield" class="fd text-xl font-bold" style="color:var(--ok)">0%</div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button onclick="addProperty()" class="bp w-full"><i class="fas fa-plus mr-2"></i>Add to List</button>
+        <button onclick="copyAllData()" class="bs w-full"><i class="fas fa-copy mr-2"></i>Copy All Data</button>
+      </div>
+      <p class="text-xs mt-3" style="color:var(--t3)">"Copy All Data" copies everything to clipboard. Then in terminal run: <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">pbpaste > data/properties.json</code></p>
+    </div>
+  </div>
+</div>
+<script>
+var userProps=JSON.parse(localStorage.getItem('myprop_user')||'[]');
+function openAddForm(){document.getElementById('addMod').classList.add('on');document.getElementById('fName').focus();}
+function closeAddForm(){document.getElementById('addMod').classList.remove('on');}
+document.getElementById('fPrice').addEventListener('input',calcPreview);
+document.getElementById('fRent').addEventListener('input',calcPreview);
+document.getElementById('fSize').addEventListener('input',calcPreview);
+function calcPreview(){var p=parseFloat(document.getElementById('fPrice').value)||0;var r=parseFloat(document.getElementById('fRent').value)||0;if(p>0&&r>0){document.getElementById('addPreview').style.display='block';document.getElementById('addYield').textContent=((r*12/p)*100).toFixed(2)+'%';}else{document.getElementById('addPreview').style.display='none';}}
+function addProperty(){var n=document.getElementById('fName').value.trim();var p=parseFloat(document.getElementById('fPrice').value)||0;var r=parseFloat(document.getElementById('fRent').value)||0;var s=parseInt(document.getElementById('fSize').value)||0;if(!n){alert('Enter property name');return;}if(p<=0||r<=0||s<=0){alert('Enter valid price, rent and size');return;}var prop={name:n,type:document.getElementById('fType').value,beds:parseInt(document.getElementById('fBeds').value)||0,size:s,price:p,rent:r,year_built:parseInt(document.getElementById('fYear').value)||0,area:document.getElementById('fArea').value,state:document.getElementById('fState').value,source:'manual',yield:0,score:0,risk_level:0,risk_label:'',scraped_at:new Date().toISOString()};userProps.push(prop);localStorage.setItem('myprop_user',JSON.stringify(userProps));document.getElementById('fName').value='';closeAddForm();loadData();}
+function copyAllData(){var combined=[...allP.filter(function(p){return p.source!=='manual'}),...userProps];combined.forEach(function(p){if(p.score===0||!p.score)p.score=score(p);if(!p.risk_level||p.risk_level===0){var a=AI[p.area]||AI[p.state]||{oversupply:5};p.risk_level=Math.round(a.oversupply*10);p.risk_label=p.risk_level<30?'Low':p.risk_level<55?'Medium':p.risk_level<75?'High':'Very High';}if(p.yield===0&&p.price>0&&p.rent>0)p.yield=parseFloat(((p.rent*12/p.price)*100).toFixed(2));if(!p.price_sqft)p.price_sqft=Math.round(p.price/p.size);if(!p.scraped_at)p.scraped_at=new Date().toISOString();});var json=JSON.stringify(combined,null,2);var text='cat > data/properties.json << \'EOF\'\n'+json+'\nEOF';navigator.clipboard.writeText(text).then(function(){alert('Copied! In terminal run:\n\npbpaste > data/properties.json\ngit add data/\ngit commit -m "Update"\ngit push');});}
+var origLoad=loadData;
+loadData=function(){Promise.all([fetch('data/properties.json').catch(function(){return{json:function(){return[]}}}),fetch('data/scan_status.json').catch(function(){return{json:function(){return{}}}})]).then(function(res){return Promise.all([res[0].json(),res[1].json()]);}).then(function(data){var serverProps=data[0];scanInfo=data[1];var merged=serverProps.concat(userProps);allP=merged;var sb=document.getElementById('statusBadge');if(serverProps.length>0){sb.innerHTML='<i class="fas fa-circle text-xs mr-1" style="color:var(--ok)"></i>Live · '+merged.length+' props';}else{sb.innerHTML='<i class="fas fa-circle text-xs mr-1" style="color:var(--wrn)"></i>Local · '+merged.length+' props';}applyFilters();}).catch(function(e){origLoad();});};
+</script>
