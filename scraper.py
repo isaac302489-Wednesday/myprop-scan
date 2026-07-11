@@ -1,4 +1,4 @@
-import config
+from config import TARGET_AREAS
 
 import json
 import re
